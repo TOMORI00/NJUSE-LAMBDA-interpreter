@@ -1,8 +1,11 @@
 
+
+
 public class Lexer{
 
-	//@Author : Damon
-	//TODO:READ
+
+	//@Author: TOMORI00
+	//TODO:GRAMMAR LIST:
 	// '(' == LPAREN
 	// ')' == RPAREN
 	// '\\' == LAMBDA
@@ -23,7 +26,6 @@ public class Lexer{
     protected String tokenValue;
     private char theChar;
 
-    //TODO:OK
 	// construction method
     public Lexer(String s){
         index = 0;
@@ -76,7 +78,7 @@ public class Lexer{
     }
 
     //TODO:OK
-    // check token == t
+    // check token == t ?
     public boolean next(TokenType t){
 //    	System.out.println("	Lexer: next( " + t + " )");
         if(token == t) { return true;}
@@ -84,7 +86,7 @@ public class Lexer{
     }
 
     //TODO:OK
-    // assert matching the token type, and move next token
+    // assert matching the token type, and move to next token
     public boolean match(TokenType t){
 //    	System.out.println("	Lexer: match( " + t + " )");
         if(token == t) {nextToken(); return true;}
@@ -99,8 +101,7 @@ public class Lexer{
         else {nextToken(); return false;}
     }
 
-    //TODO:OK
-	// print all tokens
+    //TODO: FOR LEXER TEST
 	private void print() {
     	while(index < source.length()) {
     		nextToken();
@@ -109,7 +110,7 @@ public class Lexer{
 	}
 
 	//TODO:OK
-	// test for Lexer
+	// test entrance
 	public static void main(String[] args) {
     	String a = "((\\n.\\f.\\x.f (n f x))(\\f.\\x.x))";
     	Lexer lexer = new Lexer(a);

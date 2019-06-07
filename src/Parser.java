@@ -3,9 +3,9 @@ import java.util.ArrayList;
 
 public class Parser {
 
-    //@Author : Damon
-    //TODO:READ
-    // GRAMMAR:
+
+    //@Author: TOMORI00
+    //TODO:GRAMMAR LIST:
     // term == LAMBDA LCID DOT term
     // term == application
     // application == application atom
@@ -14,12 +14,13 @@ public class Parser {
     // atom == LPAREN term RPAREN
     //
     //TODO:EXPLAIN
-    //
+    // the parser`s work is to build the tree by recursive matching TERMs, APPLICATIONs and ATOMs until it cannot go deeper any more.
+    // than it goes back from this branch to the higher node and starts to look at the another branch
+    // finally to reach the end and return the AST tree
 
     public Lexer lexer;
 
-    //TODO:OK
-    // construction method
+    //construction method
     public Parser(Lexer l){
         lexer = l;
     }
@@ -37,9 +38,9 @@ public class Parser {
     //
     //TODO:EXPLAIN
     // ctx : means context, using for building the tree (NEEDS UNDERSTANDING)
-    // param : member of Abstraction, making up Identifier, matching it`s "name"
-    // paramIndex : member of Abstraction, making up Identifier, matching it`s "De Bruijn index"
-    // body : maybe another part is a term, which is in the ctx, start another term() to analysis it.
+    // param : member of Abstraction, making up Identifier, matching it`s "name", carrying LCID
+    // paramIndex : member of Abstraction, making up Identifier, matching it`s "De Bruijn index", use for interpreting
+    // body : maybe another part is a term, which is in the ctx, start another term(ctx) to analysis it.
     private AST term(ArrayList<String> ctx){
 //        System.out.println("        --Term: COMING IN");
         if(lexer.match(TokenType.LAMBDA)) {
@@ -73,7 +74,7 @@ public class Parser {
     // if rhs is an Application, it goes deeper and divide the Application, until the rhs no longer an application.
     // what added on the tree is atom, because finally the application will be analysis to a single atom
     //
-    //TODO:PS
+    //TODO:PS.
     // as for the implement, to solve the left recursion might cause unstoppable recursion, focus on the last atom.
     // if it`s time to stop left recursion, return NULL to it`s higher Application, when Application building, it looks at the rhs, if it`s NULL, it will force the lhs to (new Application(this.lhs, this.rhs)) and force the rhs to that atom()
     // else recurse by setting lhs as new Application and setting rhs as atom(ctx)
@@ -140,9 +141,9 @@ public class Parser {
     // test for Parser
     public static void main(String[] args) {
         String s = "(\\x.\\y.(x y)x)(\\x.x)(\\y.y)";
-
         Lexer lexer = new Lexer(s);
         Parser parser = new Parser(lexer);
+        System.out.println("--------START--------");
         AST afterParse = parser.parse();
         System.out.println("--------DONE--------");
         System.out.println(afterParse.toString());

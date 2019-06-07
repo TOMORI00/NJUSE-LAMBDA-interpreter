@@ -4,9 +4,10 @@ public class Application extends AST{
     private AST lhs;//左树
     private AST rhs;//右树
 
+    //@Author: TOMORI00
     //TODO:EXPLAIN
-    // as the Application extends AST, it has to implement the toString() method
-    // then as the grammar goes, Application needs lhs and rhs, for encapsulation, Application offer APIs for Parser
+    // Application contains Lhs and Rhs, it mainly just a node dividing branches when building the trees
+    // so it offers:
     // getLhs(), getRhs(), setLhs(lhs), setRhs(rhs)
 
     //construction method

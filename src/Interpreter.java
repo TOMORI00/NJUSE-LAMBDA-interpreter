@@ -4,6 +4,13 @@ public class Interpreter {
     public Parser parser;
     public AST astAfterParser;
 
+    //@Author: TOMORI00
+    //TODO: the interpreter still have rules, it matches APPLICATIONs, ABSTRACTIONs and IDETIFIERs
+    // RULES:
+    // if meets an Application, first check its Lhs, if it`s able to eval, eval it first
+    // if meets an Abstraction, eval it`s body first
+    // if meets a Identifier, it just a Identifier waiting for substitution
+
     public Interpreter(Parser p){
         parser = p;
 //        System.out.println("    ----PARSER START----");
@@ -11,7 +18,6 @@ public class Interpreter {
 //        System.out.println("after parse: " + astAfterParser);
 //        System.out.println("    ----PARSER DONE----");
     }
-
 
     private  boolean isAbstraction(AST ast){
         return ast instanceof Abstraction;
@@ -25,29 +31,59 @@ public class Interpreter {
 
     public AST eval(){ return evalAST(astAfterParser); }
 
+
+    //TODO:EXPLAIN
+    // check ast
+    // if Application, eval(check) it according to it`s Lhs and Rhs
+    //      if Lhs==Abstraction, di substitution
+    //      if Lhs==Application, do further evaluation according to it`s Rhs(whether Rhs is able to eval or even substitution)
+    // else Lhs is over, go to eval Rhs
+    // if Abstraction, eval(check) it body
+    // else it at recurse returning time, just return itself.
     private AST evalAST(AST ast) {
+//        System.out.println("            --evalAST:COMING IN");
+//        System.out.println("            ==evalAST:RECEIVE: ast: "+ ast);
         while(true){
+            // check ast
+            // if Application, eval(check) it according to it`s Lhs and Rhs
+            //      if Lhs==Abstraction, di substitution
+            //      if Lhs==Application, do further evaluation according to it`s Rhs(whether Rhs is able to eval or even substitution)
+            //  else Lhs is over, go to Rhs
+            // if Abstraction, eval(check) it body
+            // else it at recurse returning time, just return itself.
             if(ast instanceof Application){
+//                System.out.println("            evalAST: ast match Application" + "Lhs: " + ((Application)ast).getLhs() + " Rhs: " + ((Application)ast).getRhs());
                 if(isAbstraction(((Application) ast).getLhs())){
+//                    System.out.println("            evalAST: ast Lhs: " + ((Application)ast).getLhs() + " matches Abstraction, substitute its body: " + ((Abstraction)((Application) ast).getLhs()).body + "with Rhs: " + ((Application) ast).getRhs());
+                    //It`s the case that can do substitute: Lhs is Abstraction
                     ast = substitute(((Abstraction)((Application) ast).getLhs()).body,((Application) ast).getRhs());
                 }
                 else if(isApplication(((Application) ast).getLhs())&&!isIdentifier(((Application) ast).getRhs())){
+//                    System.out.println("            evalAST: ast Lhs: " + ((Application) ast).getLhs() + " matches Application and ast Rhs: " + ((Application) ast).getRhs() + " is not a Identifier");
                     ((Application) ast).setLhs(evalAST(((Application) ast).getLhs()));
-                    ((Application) ast).setRhs(evalAST(((Application) ast).getRhs()));
-                    if(isAbstraction(((Application) ast).getLhs())) ast = evalAST(ast);
+                    ((Application) ast).setRhs(evalAST(((Application) ast).getRhs()));//Rhs still needs eval
+                    if(isAbstraction(((Application) ast).getLhs())) {
+                        // Lhs matches Abstraction, go to corresponding method by evalAST() again
+                        ast = evalAST(ast);
+                    }
                     return ast;
                 }
                 else if(isApplication(((Application) ast).getLhs())&&isIdentifier(((Application) ast).getRhs())){
+//                    System.out.println("            evalAST: ast Lhs: " + ((Application) ast).getLhs() + " matches Application and ast Rhs: " + ((Application) ast).getRhs() + " is a Identifier");
                     ((Application) ast).setLhs(evalAST(((Application) ast).getLhs()));
-                    if(isAbstraction(((Application) ast).getLhs())) ast = evalAST(ast);
+                    if(isAbstraction(((Application) ast).getLhs())) {
+                        // Lhs matches Abstraction, go to corresponding method by evalAST() again
+                        ast = evalAST(ast);
+                    }
                     return ast;
                 }
                 else{
-                    ((Application) ast).setRhs(evalAST(((Application) ast).getRhs()));
+                    ((Application) ast).setRhs(evalAST(((Application) ast).getRhs()));// eval Rhs
                     return ast;
                 }
             }
             else if(isAbstraction(ast)){
+//                System.out.println("            evalAST: ast:" + ast + " matches Abstraction, eval its body first");
                 ((Abstraction) ast).body = evalAST(((Abstraction) ast).body);
                 return ast;
             }
@@ -57,37 +93,37 @@ public class Interpreter {
         }
     }
 
-    private AST myevalAST(AST ast){
-        System.out.println("            --evalAST:COMING IN");
-        System.out.println("            ==evalAST:RECEIVE: ast: "+ ast);
-        while(true) {
-            if(isApplication(ast)) {
-                System.out.println("            evalAST: ast match Application" + "Lhs: " + ((Application)ast).getLhs() + " Rhs: " + ((Application)ast).getRhs());
-                if(isAbstraction(((Application)ast).getLhs()) && isAbstraction(((Application)ast).getRhs())) {
-                    System.out.println("            evalAST: Application: Lhs & RHs match Abstraction, substitute Lhs: " + ((Application)ast).getLhs() + "with Rhs: " + ((Application)ast).getRhs());
-                    ast = substitute(((Application) ast).getLhs(), ((Application) ast).getRhs());
-                    System.out.println("            evalAST: substitute over, ast: " + ast);
-                    return ast;
-                }
-                else if(isAbstraction(((Application) ast).getLhs())) {
-                    System.out.println("            evalAST: Application: Lhs match Abstraction, setting Rhs: " + ((Application)ast).getLhs() + " with Rhs: " + ((Application)ast).getRhs());
-                    ((Application) ast).setRhs(evalAST(((Application) ast).getRhs()));
-                    System.out.println("            evalAST: substitute over, ast: " + ast);
-                    return ast;
-                }
-                else {
-                    System.out.println("            evalAST: Application: no matches, setting Lhs with this.Lhs");
-                    ((Application) ast).setLhs(evalAST(((Application) ast).getLhs()));
-                    System.out.println("            evalAST: substitute over, ast: " + ast);
-                    return ast;
-                }
-            }
-            else {
-                System.out.println("            evalAST: ast not match Application, return itself:" + ast);
-                return ast;
-            }
-        }
-    }
+//    private AST myevalAST(AST ast){
+//        System.out.println("            --evalAST:COMING IN");
+//        System.out.println("            ==evalAST:RECEIVE: ast: "+ ast);
+//        while(true) {
+//            if(isApplication(ast)) {
+//                System.out.println("            evalAST: ast match Application" + "Lhs: " + ((Application)ast).getLhs() + " Rhs: " + ((Application)ast).getRhs());
+//                if(isAbstraction(((Application)ast).getLhs()) && isAbstraction(((Application)ast).getRhs())) {
+//                    System.out.println("            evalAST: Application: Lhs & RHs match Abstraction, substitute Lhs: " + ((Application)ast).getLhs() + "with Rhs: " + ((Application)ast).getRhs());
+//                    ast = substitute(((Application) ast).getLhs(), ((Application) ast).getRhs());
+//                    System.out.println("            evalAST: substitute over, ast: " + ast);
+//                    return ast;
+//                }
+//                else if(isAbstraction(((Application) ast).getLhs())) {
+//                    System.out.println("            evalAST: Application: Lhs match Abstraction, setting Rhs: " + ((Application)ast).getLhs() + " with Rhs: " + ((Application)ast).getRhs());
+//                    ((Application) ast).setRhs(evalAST(((Application) ast).getRhs()));
+//                    System.out.println("            evalAST: substitute over, ast: " + ast);
+//                    return ast;
+//                }
+//                else {
+//                    System.out.println("            evalAST: Application: no matches, setting Lhs with this.Lhs");
+//                    ((Application) ast).setLhs(evalAST(((Application) ast).getLhs()));
+//                    System.out.println("            evalAST: substitute over, ast: " + ast);
+//                    return ast;
+//                }
+//            }
+//            else {
+//                System.out.println("            evalAST: ast not match Application, return itself:" + ast);
+//                return ast;
+//            }
+//        }
+//    }
 
     private AST substitute(AST node,AST value){ return shift(-1,subst(node,shift(1,value,0),0),0); }
 
@@ -106,23 +142,23 @@ public class Interpreter {
      */
 
     private AST subst(AST node, AST value, int depth){
-        System.out.println("            --subst:COMING IN");
-        System.out.println("            ==subst: RECEIVE: node: "+ node + " value: " + value + "depth: " + depth);
+//        System.out.println("            --subst:COMING IN");
+//        System.out.println("            ==subst: RECEIVE: node: "+ node + " value: " + value + "depth: " + depth);
         if(isApplication(node)) {
-            System.out.println("        subst: node match Application, subst Lhs: " + ((Application) node).getLhs() + " and Rhs: " + ((Application) node).getRhs());
+//            System.out.println("        subst: node match Application, subst Lhs: " + ((Application) node).getLhs() + " and Rhs: " + ((Application) node).getRhs());
             return new Application( subst(((Application) node).getLhs(),value,depth),subst(((Application) node).getRhs(),value,depth));
         }
         else if(isAbstraction(node)) {
-            System.out.println("        subst: node match Abstraction, moving body: " + ((Abstraction) node).body + " and go deeper by depth: " + depth + "++");
+//            System.out.println("        subst: node match Abstraction, moving body: " + ((Abstraction) node).body + " and go deeper by depth: " + depth + "++");
             return new Abstraction( ((Abstraction) node).param,subst(((Abstraction) node).body,value,depth+1));
         }
         else {
-            System.out.println("        subst: node match Identifier, Dindex = depth.identifier?");
+//            System.out.println("        subst: node match Identifier, Dindex = depth.identifier?");
             if(depth == ((Identifier)node).getDBindex()) {
-                System.out.println("        depth: " + depth + " == " + "Dindex: " + ((Identifier)node).getDBindex() + "shift(depth: " + depth + "value: " + value);
+//                System.out.println("        depth: " + depth + " == " + "Dindex: " + ((Identifier)node).getDBindex() + "shift(depth: " + depth + "value: " + value);
                 return shift(depth,value,0); }
             else
-                System.out.println("        depth: " + depth + " != " + "Dindex: " + ((Identifier)node).getDBindex() + "return node: " + node);
+//                System.out.println("        depth: " + depth + " != " + "Dindex: " + ((Identifier)node).getDBindex() + "return node: " + node);
                 return node;
         }
     }
@@ -141,24 +177,24 @@ public class Interpreter {
      */
 
     private AST shift(int by, AST node,int from){
-        System.out.println("            --shift: COMING IN");
-        System.out.println("            ==shift: RECEIVE: by:" + by + " node: " + node + "from: " + from);
+//        System.out.println("            --shift: COMING IN");
+//        System.out.println("            ==shift: RECEIVE: by:" + by + " node: " + node + "from: " + from);
         if(isApplication(node)) {
-            System.out.println("            shift: node match Application, shift Lhs: " + ((Application)(node)).getLhs() + " and Rhs: " + ((Application)(node)).getRhs());
+//            System.out.println("            shift: node match Application, shift Lhs: " + ((Application)(node)).getLhs() + " and Rhs: " + ((Application)(node)).getRhs());
             return new Application( shift(by,((Application)(node)).getLhs(),from), shift(by,((Application)(node)).getRhs(),from));
         }
         else if(isAbstraction(node)) {
-            System.out.println("        shift: node match Abstraction, shift(by: " + by + ", node.body:" + ((Abstraction)node).body + ", from: " + from + "+1)");
+//            System.out.println("        shift: node match Abstraction, shift(by: " + by + ", node.body:" + ((Abstraction)node).body + ", from: " + from + "+1)");
             return new Abstraction( ((Abstraction)node).param, shift(by,((Abstraction)node).body,from+1));
         }
         else {
-            System.out.print("        shift: node match Identifier, and ");
+//            System.out.print("        shift: node match Identifier, and ");
             if(((Identifier)node).getDBindex() >= from) {
-                System.out.println("  shift: match (identifier.Dindex >= from), Dindex: "+ ((Identifier)node).getDBindex() + " + by: " + by);
+//                System.out.println("  shift: match (identifier.Dindex >= from), Dindex: "+ ((Identifier)node).getDBindex() + " + by: " + by);
                 return new Identifier( ((Identifier)node).getName(), String.valueOf(((Identifier)node).getDBindex() + by));
             }
             else {
-                System.out.println("  shift: match (identifier.Dindex >= from), Dindex: "+ ((Identifier)node).getDBindex() + " + 0");
+//                System.out.println("  shift: match (identifier.Dindex >= from), Dindex: "+ ((Identifier)node).getDBindex() + " + 0");
                 return new Identifier( ((Identifier)node).getName(), String.valueOf(((Identifier)node).getDBindex()));
             }
         }

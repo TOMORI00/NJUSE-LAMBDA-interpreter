@@ -5,6 +5,6 @@ public enum TokenType {
      LPAREN,
      RPAREN,
      LCID,
-     DOT,
-     SPACE
+     DOT
 }
+// NO EXPLAINING NECESSARY
