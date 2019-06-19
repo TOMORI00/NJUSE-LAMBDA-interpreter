@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="LAMBDA-interpreter:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/LAMBDA_interpreter_jar</output-path>
+    <root id="archive" name="LAMBDA-interpreter.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="D:/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="LAMBDA-interpreter" />
+    </root>
+  </artifact>
+</component>

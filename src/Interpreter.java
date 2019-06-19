@@ -1,3 +1,4 @@
+import java.util.Scanner;
 
 public class Interpreter {
 
@@ -234,50 +235,86 @@ public class Interpreter {
     }
 
     public static void main(String[] args) {
-        String[] sources = {
-                ZERO,//0
-                ONE,//1
-                TWO,//2
-                THREE,//3
-                app(PLUS, ZERO, ONE),//4
-                app(PLUS, TWO, THREE),//5
-                app(POW, TWO, TWO),//6
-                app(PRED, ONE),//7
-                app(PRED, TWO),//8
-                app(SUB, FOUR, TWO),//9
-                app(AND, TRUE, TRUE),//10
-                app(AND, TRUE, FALSE),//11
-                app(AND, FALSE, FALSE),//12
-                app(OR, TRUE, TRUE),//13
-                app(OR, TRUE, FALSE),//14
-                app(OR, FALSE, FALSE),//15
-                app(NOT, TRUE),//16
-                app(NOT, FALSE),//17
-                app(IF, TRUE, TRUE, FALSE),//18
-                app(IF, FALSE, TRUE, FALSE),//19
-                app(IF, app(OR, TRUE, FALSE), ONE, ZERO),//20
-                app(IF, app(AND, TRUE, FALSE), FOUR, THREE),//21
-                app(ISZERO, ZERO),//22
-                app(ISZERO, ONE),//23
-                app(LEQ, THREE, TWO),//24
-                app(LEQ, TWO, THREE),//25
-                app(EQ, TWO, FOUR),//26
-                app(EQ, FIVE, FIVE),//27
-                app(MAX, ONE, TWO),//28
-                app(MAX, FOUR, TWO),//29
-                app(MIN, ONE, TWO),//30
-                app(MIN, FOUR, TWO),//31
-        };
 
-        System.out.println("--------START--------");
+        System.out.println("----------------LAMBDA INTERPRETER----------------");
+        System.out.println("--MENU--------------------------------------------");
+        System.out.println("--1 Auto show-------------------------------------");
+        System.out.println("--2 Manual input----------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("==Author TOMORI00=================================");
 
+        Scanner scanner = new Scanner(System.in);
+        String in = scanner.next();
+        if (in.equals("1")) {
+            String[] sources = {
+                    ZERO,//0
+                    ONE,//1
+                    TWO,//2
+                    THREE,//3
+                    app(PLUS, ZERO, ONE),//4
+                    app(PLUS, TWO, THREE),//5
+                    app(POW, TWO, TWO),//6
+                    app(PRED, ONE),//7
+                    app(PRED, TWO),//8
+                    app(SUB, FOUR, TWO),//9
+                    app(AND, TRUE, TRUE),//10
+                    app(AND, TRUE, FALSE),//11
+                    app(AND, FALSE, FALSE),//12
+                    app(OR, TRUE, TRUE),//13
+                    app(OR, TRUE, FALSE),//14
+                    app(OR, FALSE, FALSE),//15
+                    app(NOT, TRUE),//16
+                    app(NOT, FALSE),//17
+                    app(IF, TRUE, TRUE, FALSE),//18
+                    app(IF, FALSE, TRUE, FALSE),//19
+                    app(IF, app(OR, TRUE, FALSE), ONE, ZERO),//20
+                    app(IF, app(AND, TRUE, FALSE), FOUR, THREE),//21
+                    app(ISZERO, ZERO),//22
+                    app(ISZERO, ONE),//23
+                    app(LEQ, THREE, TWO),//24
+                    app(LEQ, TWO, THREE),//25
+                    app(EQ, TWO, FOUR),//26
+                    app(EQ, FIVE, FIVE),//27
+                    app(MAX, ONE, TWO),//28
+                    app(MAX, FOUR, TWO),//29
+                    app(MIN, ONE, TWO),//30
+                    app(MIN, FOUR, TWO),//31
+            };
+            System.out.println("--------START--------");
 //        for(int i=0 ; i<sources.length; i++) {
+            for(int i = 0; i < 5; i++) {
+                String source = sources[i];
 
-        for(int i = 0; i < 10; i++) {
-            String source = sources[i];
+                System.out.println(i+":"+source);
+                System.out.println("--------PARSER START--------");
+                Lexer lexer = new Lexer(source);
 
-            System.out.println(i+":"+source);
+                Parser parser = new Parser(lexer);
+
+                Interpreter interpreter = new Interpreter(parser);
+
+                AST result = interpreter.eval();
+                System.out.println("--------INTERPRETER OVER--------");
+                System.out.println("-                              -");
+                System.out.println("--------ANSWER--------");
+                System.out.println(i+":" + result.toString());
+                System.out.println("----------------------");
+                System.out.println();
+            }
+        }else if(in.equals("2")) {
+            System.out.println("--------Please enter the LAMBDA expression--------");
+            scanner.nextLine();
+            String source = scanner.nextLine();
+            if(source.length()==0) {
+                System.out.println("Empty input !!");
+                return;
+            }
+            System.out.println("--------START--------");
+            System.out.println(source);
             System.out.println("--------PARSER START--------");
+
             Lexer lexer = new Lexer(source);
 
             Parser parser = new Parser(lexer);
@@ -288,7 +325,7 @@ public class Interpreter {
             System.out.println("--------INTERPRETER OVER--------");
             System.out.println("-                              -");
             System.out.println("--------ANSWER--------");
-            System.out.println(i+":" + result.toString());
+            System.out.println(result.toString());
             System.out.println("----------------------");
             System.out.println();
         }
