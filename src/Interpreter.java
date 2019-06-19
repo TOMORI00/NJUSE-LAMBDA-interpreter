@@ -13,10 +13,10 @@ public class Interpreter {
 
     public Interpreter(Parser p){
         parser = p;
-//        System.out.println("    ----PARSER START----");
         astAfterParser = p.parse();
-//        System.out.println("after parse: " + astAfterParser);
-//        System.out.println("    ----PARSER DONE----");
+        System.out.println("--------PARSER OVER--------");
+        System.out.println("after parse: " + astAfterParser);
+        System.out.println("--------INTERPRETER START--------");
     }
 
     private  boolean isAbstraction(AST ast){
@@ -269,13 +269,15 @@ public class Interpreter {
                 app(MIN, FOUR, TWO),//31
         };
 
+        System.out.println("--------START--------");
+
 //        for(int i=0 ; i<sources.length; i++) {
 
         for(int i = 0; i < 10; i++) {
             String source = sources[i];
 
             System.out.println(i+":"+source);
-
+            System.out.println("--------PARSER START--------");
             Lexer lexer = new Lexer(source);
 
             Parser parser = new Parser(lexer);
@@ -283,8 +285,12 @@ public class Interpreter {
             Interpreter interpreter = new Interpreter(parser);
 
             AST result = interpreter.eval();
-
+            System.out.println("--------INTERPRETER OVER--------");
+            System.out.println("-                              -");
+            System.out.println("--------ANSWER--------");
             System.out.println(i+":" + result.toString());
+            System.out.println("----------------------");
+            System.out.println();
         }
     }
 }

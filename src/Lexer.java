@@ -11,7 +11,7 @@ public class Lexer{
 	// '\\' == LAMBDA
 	// '.' == DOT
 	// 'EOF' == EOF
-	// '[a-z][A-Z]*' == LCID      !(NOT IMPLEMENTED, just use[a-z], NEEDS FIX)!
+	// '[a-z][A-Z]*' == LCID
 	//
 	//TODO:EXPLAIN
 	// Lexer is class that interpret the origin string to Tokens, and offer some handle methods to parser, as it needs these to build AST tree.
@@ -61,6 +61,15 @@ public class Lexer{
 				break;
 			default:
 				tokenValue = String.valueOf(theChar);
+				index++;
+				while(('A' <= nextChar())&&(nextChar() <= 'Z')) {
+					tokenValue += String.valueOf(theChar);
+					index++;
+					token = TokenType.LCID;
+				}
+				if(!(('A' <= nextChar())&&(nextChar() <= 'Z'))) {
+					index--;
+				}
 				token = TokenType.LCID;
 		}
 		index++;
