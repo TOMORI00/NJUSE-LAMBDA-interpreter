@@ -35,8 +35,8 @@ public class Interpreter {
 
     //TODO:EXPLAIN
     // check ast
-    // if Application, eval(check) it according to it`s Lhs and Rhs
-    //      if Lhs==Abstraction, di substitution
+    // if Application, eval()check it according to it`s Lhs and Rhs
+    //      if Lhs==Abstraction, do substitution
     //      if Lhs==Application, do further evaluation according to it`s Rhs(whether Rhs is able to eval or even substitution)
     // else Lhs is over, go to eval Rhs
     // if Abstraction, eval(check) it body
@@ -46,8 +46,8 @@ public class Interpreter {
 //        System.out.println("            ==evalAST:RECEIVE: ast: "+ ast);
         while(true){
             // check ast
-            // if Application, eval(check) it according to it`s Lhs and Rhs
-            //      if Lhs==Abstraction, di substitution
+            // if Application, eval()check it according to it`s Lhs and Rhs
+            //      if Lhs==Abstraction, do substitution
             //      if Lhs==Application, do further evaluation according to it`s Rhs(whether Rhs is able to eval or even substitution)
             //  else Lhs is over, go to Rhs
             // if Abstraction, eval(check) it body
@@ -94,43 +94,11 @@ public class Interpreter {
         }
     }
 
-//    private AST myevalAST(AST ast){
-//        System.out.println("            --evalAST:COMING IN");
-//        System.out.println("            ==evalAST:RECEIVE: ast: "+ ast);
-//        while(true) {
-//            if(isApplication(ast)) {
-//                System.out.println("            evalAST: ast match Application" + "Lhs: " + ((Application)ast).getLhs() + " Rhs: " + ((Application)ast).getRhs());
-//                if(isAbstraction(((Application)ast).getLhs()) && isAbstraction(((Application)ast).getRhs())) {
-//                    System.out.println("            evalAST: Application: Lhs & RHs match Abstraction, substitute Lhs: " + ((Application)ast).getLhs() + "with Rhs: " + ((Application)ast).getRhs());
-//                    ast = substitute(((Application) ast).getLhs(), ((Application) ast).getRhs());
-//                    System.out.println("            evalAST: substitute over, ast: " + ast);
-//                    return ast;
-//                }
-//                else if(isAbstraction(((Application) ast).getLhs())) {
-//                    System.out.println("            evalAST: Application: Lhs match Abstraction, setting Rhs: " + ((Application)ast).getLhs() + " with Rhs: " + ((Application)ast).getRhs());
-//                    ((Application) ast).setRhs(evalAST(((Application) ast).getRhs()));
-//                    System.out.println("            evalAST: substitute over, ast: " + ast);
-//                    return ast;
-//                }
-//                else {
-//                    System.out.println("            evalAST: Application: no matches, setting Lhs with this.Lhs");
-//                    ((Application) ast).setLhs(evalAST(((Application) ast).getLhs()));
-//                    System.out.println("            evalAST: substitute over, ast: " + ast);
-//                    return ast;
-//                }
-//            }
-//            else {
-//                System.out.println("            evalAST: ast not match Application, return itself:" + ast);
-//                return ast;
-//            }
-//        }
-//    }
-
     private AST substitute(AST node,AST value){ return shift(-1,subst(node,shift(1,value,0),0),0); }
 
     /**
      *  value替换node节点中的变量：
-     *  如果节点是Applation，分别对左右树替换；
+     *  如果节点是Application，分别对左右树替换；
      *  如果node节点是abstraction，替入node.body时深度得+1；
      *  如果node是identifier，则替换De Bruijn index值等于depth的identifier（替换之后value的值加深depth）
 
@@ -166,7 +134,7 @@ public class Interpreter {
 
     /**
      *  De Bruijn index值位移
-     *  如果节点是Applation，分别对左右树位移；
+     *  如果节点是Application，分别对左右树位移；
      *  如果node节点是abstraction，新的body等于旧node.body位移by（from得+1）；
      *  如果node是identifier，则新的identifier的De Bruijn index值如果大于等于from则加by，否则加0（超出内层的范围的外层变量才要shift by位）.
         *@param by 位移的距离
