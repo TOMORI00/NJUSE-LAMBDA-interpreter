@@ -18,7 +18,7 @@ public class Abstraction extends AST {
 
     // when printing the tree, an Abstraction is like "\\. body", let the body along to print itself
     // BUT because this is a PJ of a course and it use OJ to assert, I have to print like this:
-    public String toString(){ String output = "\\." + body.toString(); return output;}
+//    public String toString(){ String output = "\\." + body.toString(); return output;}
     // Actually it should like this:
-//    public String toString(){ String output = "\\" + param + "." + body.toString(); return output;}
+    public String toString(){ String output = "\\" + param + "." + body.toString(); return output;}
 }

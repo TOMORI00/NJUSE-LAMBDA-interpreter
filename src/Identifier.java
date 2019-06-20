@@ -23,9 +23,9 @@ public class Identifier extends AST {
 
     // when printing the tree, the identifier is always the last node so it just needs to print itself,
     // BUT because this is a PJ of a course and it use OJ to assert, I have to print like this:
-    public String toString(){
-        return value;
-    }
+//    public String toString(){
+//        return value;
+//    }
     // Actually it should like this:
-//    public String toString(){ return name;}
+    public String toString(){ return name;}
 }

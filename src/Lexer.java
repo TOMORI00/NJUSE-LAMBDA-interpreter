@@ -20,6 +20,7 @@ public class Lexer{
 	// match(Token), if next Token matches the Token input, catch next Token and return true, else return false
 	// skip(Token), just catch next Token, regardless of matches or not
 	//
+
     private String source;
     private int index;
     private TokenType token;
@@ -62,12 +63,12 @@ public class Lexer{
 			default:
 				tokenValue = String.valueOf(theChar);
 				index++;
-				while(('A' <= nextChar())&&(nextChar() <= 'Z')) {
+				while((('A' <= nextChar())&&(nextChar() <= 'Z'))||(('a' <= nextChar())&&(nextChar() <= 'z'))) {
 					tokenValue += String.valueOf(theChar);
 					index++;
 					token = TokenType.LCID;
 				}
-				if(!(('A' <= nextChar())&&(nextChar() <= 'Z'))) {
+				if(!((('A' <= nextChar())&&(nextChar() <= 'Z')))||(('a' <= nextChar())&&(nextChar() <= 'z'))) {
 					index--;
 				}
 				token = TokenType.LCID;
@@ -121,7 +122,7 @@ public class Lexer{
 	//TODO:OK
 	// test entrance
 	public static void main(String[] args) {
-    	String a = "((\\n.\\f.\\x.f (n f x))(\\f.\\x.x))";
+    	String a = "((\\n.\\f.\\x.f (n fADWss x))(\\f.\\x.x))";
     	Lexer lexer = new Lexer(a);
     	lexer.print();
 	}
