@@ -104,7 +104,7 @@ public class Lexer{
     }
 
     //TODO:OK
-    // skip token and move next token
+    // force skip token and move to next token
     public boolean skip(TokenType t){
 //    	System.out.println("	Lexer: skip(" + t + " )");
         if(token == t) { nextToken(); return true;}

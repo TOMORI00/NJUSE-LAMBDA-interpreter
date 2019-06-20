@@ -33,8 +33,8 @@ public class Parser {
         return ast;
     }
 
-    //TODO:OK/     !(NEEDS UNDERSTANDING)!
-    // according to the grammar, the term should match "λ x 。 term" or "application"
+    //TODO:OK
+    // according to the grammar, the term should match "λx。term" or "application"
     //
     //TODO:EXPLAIN
     // ctx : means context, using for building the tree (NEEDS UNDERSTANDING)
@@ -66,7 +66,7 @@ public class Parser {
             return application(ctx);}//if it`s not start with λ, use application() to analysis it.
     }
 
-    //TODO:OK/     !(NEEDS UNDERSTANDING)!
+    //TODO:OK
     // according to the grammar, the application should match "Application Atom" or "Atom"
     //
     //TODO:EXPLAIN
@@ -100,7 +100,7 @@ public class Parser {
         }
     }
 
-    //TODO: OK/     !(NEEDS UNDERSTANDING)!
+    //TODO: OK
     // according to the grammar, the atom should match "LAPAREN term RAPAREN" or "LCID"
     //
     //TODO: EXPLAIN
@@ -129,9 +129,9 @@ public class Parser {
             return null;
         }
         else if(lexer.match(null)) {
-//            System.out.println("        atom: matched NULL, stopping and returning");
+//            System.out.println("        atom: matched NULL, go over it");
             lexer.match(null);
-//            System.out.println("        atom: solving unreached atoms by atom( " + ctx + " )");
+//            System.out.println("        atom: solving unreached parts by atom( " + ctx + " )");
             return atom(ctx);
         }
         else return null;
