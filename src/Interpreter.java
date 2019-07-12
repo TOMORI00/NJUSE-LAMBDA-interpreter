@@ -272,30 +272,32 @@ public class Interpreter {
                 System.out.println();
             }
         }else if(in.equals("2")) {
-            System.out.println("--------Please enter the LAMBDA expression--------");
-            scanner.nextLine();
-            String source = scanner.nextLine();
-            if(source.length()==0) {
-                System.out.println("Empty input !!");
-                return;
+            while(true) {
+                System.out.println("--------Please enter the LAMBDA expression--------");
+                scanner.nextLine();
+                String source = scanner.nextLine();
+                if(source.length()==0) {
+                    System.out.println("Empty input !!");
+                    return;
+                }
+                System.out.println("--------START--------");
+                System.out.println(source);
+                System.out.println("--------PARSER START--------");
+
+                Lexer lexer = new Lexer(source);
+
+                Parser parser = new Parser(lexer);
+
+                Interpreter interpreter = new Interpreter(parser);
+
+                AST result = interpreter.eval();
+                System.out.println("--------INTERPRETER OVER--------");
+                System.out.println("-                              -");
+                System.out.println("--------ANSWER--------");
+                System.out.println(result.toString());
+                System.out.println("----------------------");
+                System.out.println();
             }
-            System.out.println("--------START--------");
-            System.out.println(source);
-            System.out.println("--------PARSER START--------");
-
-            Lexer lexer = new Lexer(source);
-
-            Parser parser = new Parser(lexer);
-
-            Interpreter interpreter = new Interpreter(parser);
-
-            AST result = interpreter.eval();
-            System.out.println("--------INTERPRETER OVER--------");
-            System.out.println("-                              -");
-            System.out.println("--------ANSWER--------");
-            System.out.println(result.toString());
-            System.out.println("----------------------");
-            System.out.println();
         }
     }
 }
