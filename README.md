@@ -1,5 +1,5 @@
 # LAMBDA-interpreter
----
-NJU-SE-软件工程与计算一课程大作业
 
-a LAMDBA-interpreter written in Java
+NJUSE 软件工程与计算Ⅰ课程大作业
+
+使用java实现的LAMBDA语言解释器
